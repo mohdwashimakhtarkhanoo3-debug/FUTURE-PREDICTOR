@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hand Scan System</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #0f2027, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.scanner-box {
+    width: 320px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+    background: rgba(0,255,255,0.05);
+    box-shadow: 0 0 30px cyan;
+}
+
+.hand {
+    font-size: 120px;
+    animation: pulse 1.5s infinite;
+    cursor: pointer;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); color: cyan; }
+    50% { transform: scale(1.1); color: #00ffff; }
+    100% { transform: scale(1); color: cyan; }
+}
+
+.scan-line {
+    height: 4px;
+    width: 0;
+    background: lime;
+    margin: 10px auto;
+    box-shadow: 0 0 10px lime;
+}
+
+.status {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.hidden {
+    display: none;
+}
+
+.video-box {
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="scanner-box" id="scanner">
+    <div class="hand" id="hand">✋</div>
+    <div class="scan-line" id="scanLine"></div>
+    <div class="status" id="status">Place your hand for 2 seconds</div>
+</div>
+
+<div class="scanner-box hidden video-box" id="result">
+    <h2>⚠️ WARNING ⚠️</h2>
+    <p>26 me duniya khatam hai</p>
+
+    <!-- Fake Video -->
+    <video width="260" autoplay loop muted>
+        <source src="https://cdn.pixabay.com/vimeo/458320947/apocalypse-45234.mp4?width=640&hash=9f4f3f4a1f8b5c6a" type="video/mp4">
+    </video>
+</div>
+
+<script>
+let timer;
+let scanning = false;
+
+const hand = document.getElementById("hand");
+const scanLine = document.getElementById("scanLine");
+const statusText = document.getElementById("status");
+
+hand.addEventListener("mousedown", startScan);
+hand.addEventListener("touchstart", startScan);
+
+hand.addEventListener("mouseup", stopScan);
+hand.addEventListener("mouseleave", stopScan);
+hand.addEventListener("touchend", stopScan);
+
+function startScan() {
+    if (scanning) return;
+    scanning = true;
+    statusText.innerText = "Scanning...";
+    scanLine.style.transition = "width 2s linear";
+    scanLine.style.width = "80%";
+
+    timer = setTimeout(() => {
+        document.getElementById("scanner").classList.add("hidden");
+        document.getElementById("result").classList.remove("hidden");
+    }, 2000);
+}
+
+function stopScan() {
+    scanning = false;
+    clearTimeout(timer);
+    scanLine.style.transition = "none";
+    scanLine.style.width = "0";
+    statusText.innerText = "Place your hand for 2 seconds";
+}
+</script>
+
+</body>
+</html>
